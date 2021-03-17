@@ -1,0 +1,9 @@
+# List your distribution scripts here
+# one each line
+# using full path
+#
+# To test only parts of the circuit, comment out all scripts that do not apply
+# ____________________________________________________________________________
+/opt/certs_distrib/mkrtkrouter_certs.sh
+/opt/certs_distrib/apache2_certs.sh
+/opt/certs_distrib/proxmox_certs.sh
