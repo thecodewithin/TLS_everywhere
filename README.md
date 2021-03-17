@@ -125,10 +125,12 @@ Congratulations, all simulated renewals succeeded:
 
 #### Step 4: preparations for the scripts
 
-Before we proceed further, though, we need to create a directory to install the scripts, and make sure the rsa keys from our `mailman` user are available to them.
+Before we proceed further, though, we need to create a directory to install the scripts and one for the logs, and make sure the rsa keys from our `mailman` user are available to the scripts.
 
 ```
-~$ mkdir /opt/certs_distrib
+~$ sudo mkdir /opt/certs_distrib
+
+~$ sudo mkdir /var/log/letsencrypt
 
 ~$ sudo ln -s /home/mailman/.ssh/id_rsa /opt/certs_distrib/id_rsa
 ~$ sudo ln -s /home/mailman/.ssh/id_rsa.pub /opt/certs_distrib/id_rsa.pub
@@ -150,6 +152,14 @@ ssh-keygen -t rsa -b 4096
 ```
 
 ### Destination servers
+
+To install the scripts from this repo and to store the logs generated, create a directory under `/opt` on each destination server:
+
+```
+~$ sudo mkdir -p /opt/certs_distrib/log
+```
+
+Now share the rsa keys from the `certmanager` with each destination server, and vice versa.
 
 Here we must make a distinction based on whether your destination server allows remote root logins or not. Let's tackle first the most complex case: when remote root logins are forbidden.
 
@@ -198,7 +208,7 @@ command="/opt/certs_distrib/proxmoxroot_certs.sh",no-agent-forwarding,no-port-fo
 
 Be careful not to modify the key itself! I've destroyed it in this example for obvous reasons.
 
-Next, copy the destiantion server's `root`'s public key into `certmanager`'s `mailman`'s `~/.ssh/authorized_keys`. No need to modify this one.
+Next, copy the destination server's `root`'s public key into `certmanager`'s `mailman`'s `~/.ssh/authorized_keys`. No need to modify this one.
 
 #### MikroTik router
 
@@ -212,7 +222,7 @@ Thank you, Alex!!
 
 We're almost there.
 
-Copy the files in the `local_scripts` directory in this repo to `/opt/certs_distrib` on your `certmanager` server. Change owner to `root` and make them executable by owner.
+Copy all the files in the `local_scripts` directory in this repo to `/opt/certs_distrib` on your `certmanager` server. Change owner to `root` and make the `.sh` files executable by owner.
 
 Copy each of the `server_scripts` scripts in this repo to `/opt/certs_distrib/` on the appropiate server. Change owner to `root` and make them executable by owner.
 
@@ -222,9 +232,11 @@ Edit the scripts, all of them, and substitute your own domain name and user name
 
 Take a good look at the scripts and make sure you understand what they do, so you can adapt them to your environment if needed.
 
+Create any new scripts you might need for other types of destination servers in your network, and add calls to them to the `destins` file.
+
 ### Create and distribute new certificate
 
-Run `certbot` with the `--deploy-hook` and `--staging` parameters to test the circuit. Actually, since we already have ben issued staging certificates and they have not expired, `certbot` will not download new ones, so you will have to revoke and delete them first.
+On your `certmanager` server, whith sudo privileges, run `certbot` with the `--deploy-hook` and `--staging` parameters to test the circuit. Actually, since we already have ben issued staging certificates and they have not expired, `certbot` will not download new ones, so you will have to revoke and delete them first.
 
 ```
 ~$ sudo certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini --register-unsafely-without-email --deploy-hook /opt/certs_distrib/distrib_certs.sh --staging -d *.yourdomain.tld
@@ -257,6 +269,8 @@ If you now run a dry run renew again, you should see this message:
 ```
 Dry run: skipping deploy hook command: /opt/certs_distrib/distrib_certs.sh
 ```
+
+Your hook is there, ready to distribute your renewed certificates.
 
 ## Done!
 
