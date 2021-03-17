@@ -13,7 +13,7 @@ My goal is to be able to **automatically** renew TLS certificates, from a **trus
 1. Install `certbot` on the certificate server
 1. Modify the `authorized_keys` files on the destination servers so that the certificate server's user can trigger a script, but not login.
 1. Copy files from the `local_files` directory in this repo to `/opt/certs_distrib/` in the certificate server
-1. Copy files from the `server_files` directory in this repo to `opt/certs_distrib/` in the appropiate destination server
+1. Copy files from the `server_files` directory in this repo to `/opt/certs_distrib/` in the appropiate destination server
 1. Review all the scripts and make your changes (e.g. username and domain name must be changed)
 1. Request a certificate from Let's Encrypt with `certbot`, using the `--deploy-hook` parameter
 1. Watch your certificate be automagically issued and deployed to all configured destinations
