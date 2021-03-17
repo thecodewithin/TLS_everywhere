@@ -16,7 +16,7 @@ My goal is to be able to **automatically** renew TLS certificates, from a **trus
 1. Copy files from the `server_files` directory in this repo to `opt/certs_distrib/` in the appropiate destination server
 1. Review all the scripts and make your changes (e.g. username and domain name must be changed)
 1. Request a certificate from Let's Encrypt with `certbot`, using the `--deploy-hook` parameter
-1. Watch your certificate be automamgically issued and deployed to all configured destinations
+1. Watch your certificate be automagically issued and deployed to all configured destinations
 1. Wait 3 months to see how your certificate renews and deploys itself without your intervention
 
 ## Prereqs
