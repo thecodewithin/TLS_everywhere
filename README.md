@@ -3,7 +3,7 @@ Automatically deploy and renew trusted TLS certificates on a private network
 
 ## The Goal
 
-My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server and services on a [Kubernetes](https://kubernetes.io/) cluster (not yet).
+My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server and services on a [Kubernetes](https://kubernetes.io/) cluster (still at the drawing board).
 
 ## TL;DR;
 
