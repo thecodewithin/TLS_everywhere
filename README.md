@@ -5,6 +5,20 @@ Automatically deploy and renew trusted TLS certificates on a private network
 
 My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server and services on a [Kubernetes](https://kubernetes.io/) cluster (not yet).
 
+## TL;DR;
+
+1. Make sure you have a domain and a DNS service that provides an API to automate the DNS-01 challenge
+1. Prepare a server in your network with access to the internet (not from, mind you), and to the destination servers, those you wish to protect with TLS. None of them needs to be exposed to the internet
+1. Create a user on your certificate server and share its rsa keys with the destination servers, and back
+1. Install `certbot` on the certificate server
+1. Modify the `authorized_keys` files on the destination servers so that the certificate server's user can trigger a script, but not login.
+1. Copy files from the `local_files` directory in this repo to `/opt/certs_distrib/` in the certificate server
+1. Copy files from the `server_files` directory in this repo to `opt/certs_distrib/` in the appropiate destination server
+1. Review all the scripts and make your changes (e.g. username and domain name must be changed)
+1. Request a certificate from Let's Encrypt with `certbot`, using the `--deploy-hook` parameter
+1. Watch your certificate be automamgically issued and deployed to all configured destinations
+1. Wait 3 months to see how your certificate renews and deploys itself without your intervention
+
 ## Prereqs
 
 ### Public domain
@@ -15,7 +29,7 @@ My new domain I bought from "Godaddy", and moved the DNS from there to a free Cl
 
 ### Central server
 
-I repurposed an old Raspberry Pi 3 B+, with Debian 10, and use it as a central hub for the certificates. Let's call this "server" `certmanager`. It will connect to Let's Encrypt using `[certbot](https://certbot.eff.org/)` to get certificates (and later renew them), and then will push them, sort of, to all the needed places in my network. I have build this circuit with wildcard certificates in mind, but it could easily be adapted to subdomain certificates.
+I repurposed an old Raspberry Pi 3 B+, with Debian 10, and use it as a central hub for the certificates. Let's call this "server" `certmanager`. It will connect to Let's Encrypt using [`certbot`](https://certbot.eff.org/) to get certificates (and later renew them), and then will push them, sort of, to all the needed places in my network. I have build this circuit with wildcard certificates in mind, but it could easily be adapted to subdomain certificates.
 
 In order to push the certificates, it will `ssh` into each destination server, but never login, where I've configured the `ssh` authorization in such a way that an `ssh` connection triggers the execution of a script, local to the destination server, and closes. This script, then, will `scp` the files from `certmanager` into the right places and will restart any processes that need to be restarted for the changes to take effect.
 
@@ -182,7 +196,7 @@ Edit `root`'s `~/.ssh/authorized_keys` on the destination server, and add the `c
 command="/opt/certs_distrib/proxmoxroot_certs.sh",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ssh-rsa AAAAB3NzaC1y[...]l0n657r1n60f61883r15h[...]4kmuYdvsHi mailman@certmanager
 ```
 
-Be careful not to modify the key itself! I've destroyed it in this exemaple for obvous reasons.
+Be careful not to modify the key itself! I've destroyed it in this example for obvous reasons.
 
 Next, copy the destiantion server's `root`'s public key into `certmanager`'s `mailman`'s `~/.ssh/authorized_keys`. No need to modify this one.
 
@@ -198,9 +212,9 @@ Thank you, Alex!!
 
 We're almost there.
 
-Copy the files in the `local_scripts` directory in this repo to `/opt/certs/distrib` on your `certmanager` server. Change owner to `root` and make them executable by owner.
+Copy the files in the `local_scripts` directory in this repo to `/opt/certs_distrib` on your `certmanager` server. Change owner to `root` and make them executable by owner.
 
-Copy each of the `server_scripts` scripts in this repo to `/opt/certs/distrib/` on the appropiate server. Change owner to `root` and make them executable by owner.
+Copy each of the `server_scripts` scripts in this repo to `/opt/certs_distrib/` on the appropiate server. Change owner to `root` and make them executable by owner.
 
 Edit the `apaches`, `prxmxs` or `routers` files as appropiate. See the description at the top of each file.
 
