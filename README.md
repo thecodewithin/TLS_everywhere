@@ -25,7 +25,7 @@ My goal is to be able to **automatically** renew TLS certificates, from a **trus
 
 I have chosen [Let's Encrypt](https://letsencrypt.org/) as a trusted source because it allows you to get a certificate using a DNS-01 challenge, which means you do not need to expose anything to the internet to have a certificate issued for your domain. To be able to do that, though, your internal network must be using a public domain, not a ".local", ".test" or similar. Throughout this guide I'll refer to it as `yourdomain.tld`, and you should replace that with your own `.com`, or `.home`, or whatever domain you have purchased.
 
-My new domain I bought from "Godaddy", and moved the DNS from there to a free Cloudflare.com account, which provides an API that is supported by both `certbot`, the official Let's Encrypt tool, and `cert-manager`, the (arguably) de facto standard for certificate management on Kubernetes clusters. Instructions on Cloudflare's site are really simple and straightforward.
+My new domain I bought from [Godaddy.com](https://www.godaddy.com/), and moved the DNS from there to a free [Cloudflare.com](https://www.cloudflare.com/) account, which provides an API that is supported by both `certbot`, the official Let's Encrypt tool, and `cert-manager`, the (arguably) de facto standard for certificate management on Kubernetes clusters. Instructions on Cloudflare's site are really simple and straightforward.
 
 ### Central server
 
