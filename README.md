@@ -14,7 +14,7 @@ My goal is to be able to **automatically** renew TLS certificates, from a **trus
 1. Modify the `authorized_keys` files on the destination servers so that the certificate server's user can trigger a script, but not login.
 1. Copy files from the `local_files` directory in this repo to `/opt/certs_distrib/` in the certificate server
 1. Copy files from the `server_files` directory in this repo to `/opt/certs_distrib/` in the appropiate destination server
-1. Review all the scripts and make your changes (e.g. username and domain name must be changed)
+1. Review all the scripts and make your changes (e.g. username and domain name must probably be changed)
 1. Request a certificate from Let's Encrypt with `certbot`, using the `--deploy-hook` parameter
 1. Watch your certificate be automagically issued and deployed to all configured destinations
 1. Wait 3 months to see how your certificate renews and deploys itself without your intervention
@@ -76,7 +76,12 @@ dns_cloudflare_api_token = 4L0N657R1N60F61883R15H_4l0n657r1n60f61bb3r15h
 We are now ready to create a test certificate and see if our `certbot` installation is correct:
 
 ```
-~$ sudo certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini --register-unsafely-without-email --staging -v -d *.yourdomain.tld
+~$ sudo certbot certonly -v \
+        --dns-cloudflare \
+        --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini \
+        --register-unsafely-without-email \
+        --staging \
+        -d *.yourdomain.tld
 ```
 
 Note the `--staging` option. You should get something like this:
@@ -182,7 +187,12 @@ Copy the `certmanager`'s `mailman`'s public key, contained in `~/.ssh/id_rsa.pub
 Edit `mailman`'s `~/.ssh/authorized_keys` on the destination server, and add the `command` and some other parameters in front of `ssh-rsa...`, like this:
 
 ```
-command="sudo /opt/certs_distrib/backuppc_certs.sh",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ssh-rsa AAAAB3NzaC1y[..]l0n657r1n60f61883r15h[...]CtWbQrKwK mailman@certmanager
+command="sudo /opt/certs_distrib/backuppc_certs.sh", \
+no-agent-forwarding, \
+no-port-forwarding, \
+no-X11-forwarding, \
+no-user-rc \
+ssh-rsa AAAAB3NzaC1y[..]l0n657r1n60f61883r15h[...]CtWbQrKwK mailman@certmanager
 ```
 
 Be careful not to modify the key itself! I've destroyed it in this example for obvous reasons.
@@ -203,7 +213,12 @@ Copy `certmanager`'s `mailman`'s public key, contained in `~/.ssh/id_rsa.pub`, i
 Edit `root`'s `~/.ssh/authorized_keys` on the destination server, and add the `command` and some other parameters in front of `ssh-rsa...`, like this:
 
 ```
-command="/opt/certs_distrib/proxmoxroot_certs.sh",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ssh-rsa AAAAB3NzaC1y[...]l0n657r1n60f61883r15h[...]4kmuYdvsHi mailman@certmanager
+command="/opt/certs_distrib/proxmoxroot_certs.sh", \
+no-agent-forwarding, \
+no-port-forwarding, \
+no-X11-forwarding, \
+no-user-rc \
+ssh-rsa AAAAB3NzaC1y[...]l0n657r1n60f61883r15h[...]4kmuYdvsHi mailman@certmanager
 ```
 
 Be careful not to modify the key itself! I've destroyed it in this example for obvous reasons.
@@ -239,7 +254,13 @@ Create any new scripts you might need for other types of destination servers in 
 On your `certmanager` server, whith sudo privileges, run `certbot` with the `--deploy-hook` and `--staging` parameters to test the circuit. Actually, since we already have ben issued staging certificates and they have not expired, `certbot` will not download new ones, so you will have to revoke and delete them first.
 
 ```
-~$ sudo certbot certonly --dns-cloudflare --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini --register-unsafely-without-email --deploy-hook /opt/certs_distrib/distrib_certs.sh --staging -d *.yourdomain.tld
+~$ sudo certbot certonly \
+        --dns-cloudflare \
+        --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini \
+        --register-unsafely-without-email \
+        --deploy-hook /opt/certs_distrib/distrib_certs.sh \
+        --staging \
+        -d *.yourdomain.tld
 ```
 
 Or you can run `certbot` without the `--staging`, so the existing certificates will be replaced by production ones. If all goes well, you are done. If not, run it again with the `--staging` parameter, plus `--break-my-certs` so the certificates will be again replaced by test ones. Not very elegant, but it works.
@@ -262,7 +283,7 @@ And at the end of your `/etc/letsencrypt/renewal/yourdomain.tld.conf` there shou
 renew_hook = /opt/certs_distrib/distrib_certs.sh
 ```
 
-Make sure your last run was without the `--staging` paramter, so your certificates are production grade.
+Make sure your last run was without the `--staging` parameter, so your certificates are production grade.
 
 If you now run a dry run renew again, you should see this message:
 
