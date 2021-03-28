@@ -14,7 +14,7 @@ SSH_USER=mailman
 SSH_PRIVATE_KEY=/root/.ssh/id_rsa
 SSH_PUBLIC_KEY=/root/.ssh/id_rsa.pub
 
-DOMAIN=danarper.casa
+DOMAIN=yourdomain.tld
 TEMP_CERT_DIR=/home/$SSH_USER/certs/$DOMAIN
 TEMP_CERT_FILE=$TEMP_CERT_DIR/fullchain.pem
 TEMP_PRIVATE_KEY=$TEMP_CERT_DIR/privkey.pem
