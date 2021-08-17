@@ -3,7 +3,7 @@ Automatically deploy and renew trusted TLS certificates on a private network
 
 ## The Goal
 
-My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server, services on a [Kubernetes](https://kubernetes.io/) cluster and a [Home Assistant OS](https://www.home-assistant.io/) running on a Raspberry Pi.
+My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server, services on a [Kubernetes](https://kubernetes.io/) cluster, a [Samba Domain Controller](https://wiki.samba.org/index.php/Setting_up_Samba_as_an_Active_Directory_Domain_Controller) (with subdomain) and a [Home Assistant OS](https://www.home-assistant.io/) running on a Raspberry Pi.
 
 ## TL;DR;
 
