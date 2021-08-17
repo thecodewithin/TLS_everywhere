@@ -1,4 +1,4 @@
-# List your Samba DC servers here
+# List your Kubernetes managers here
 # one each line
 # either by hostname or by IP
 

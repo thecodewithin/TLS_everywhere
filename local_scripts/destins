@@ -7,3 +7,5 @@
 /opt/certs_distrib/mkrtkrouter_certs.sh
 /opt/certs_distrib/apache2_certs.sh
 /opt/certs_distrib/proxmox_certs.sh
+/opt/certs_distrib/k8s_certs.sh
+/opt/certs_distrib/hassos_certs.sh

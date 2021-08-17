@@ -3,7 +3,7 @@ Automatically deploy and renew trusted TLS certificates on a private network
 
 ## The Goal
 
-My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server and services on a [Kubernetes](https://kubernetes.io/) cluster (still at the drawing board).
+My goal is to be able to **automatically** renew TLS certificates, from a **trusted source**, on all the services in my home network, **without having to expose** any of my servers to the internet. The list of services includes a "[BackupPC](https://backuppc.github.io/backuppc)" server, a "[Proxmox](https://www.proxmox.com/)" server, services on a [Kubernetes](https://kubernetes.io/) cluster and a [Home Assistant OS](https://www.home-assistant.io/) running on a Raspberry Pi.
 
 ## TL;DR;
 
@@ -235,19 +235,28 @@ Thank you, Alex!!
 
 ## Bootstrapping the circuit
 
-We're almost there.
+We're almost there. Follow these steps:
 
-Copy all the files in the `local_scripts` directory in this repo to `/opt/certs_distrib` on your `certmanager` server. Change owner to `root` and make the `.sh` files executable by owner.
+1. Copy all the files in the `local_scripts` directory in this repo to `/opt/certs_distrib` on your `certmanager` server. Change owner to `root` and make the `.sh` files executable by owner.
 
-Copy each of the `server_scripts` scripts in this repo to `/opt/certs_distrib/` on the appropiate server. Change owner to `root` and make them executable by owner.
+1. Copy each of the `server_scripts` scripts in this repo to `/opt/certs_distrib/` on the appropiate server. Change owner to `root` and make them executable by owner.
+  - In the particular case of Home Assistant OS use a path that is kept between container restarts. I created `/addons/TLS_everywhere`, since `/addons` is a persintent volume. Then modify root's `~/.ssh/authorized_keys` so the `command` points at the script in this path.
+  - Furthermore, edit `configuration.yaml` and add these lines to the config:
+  ```
+  # TLS certs
+  http:
+    ssl_certificate: /ssl/fullchain.pem
+    ssl_key: /ssl/privkey.pem
+  ```
+  - These two steps require the installation of two addons: "File editor" and "Terminal & SSH".
 
-Edit the `apaches`, `prxmxs` or `routers` files as appropiate. See the description at the top of each file.
+1. Edit the `apaches`, `prxmxs`, `routers`, etc. files as appropiate. See the description at the top of each file.
 
-Edit the scripts, all of them, and substitute your own domain name and user name where appropiate.
+1. Edit the scripts, all of them, and substitute your own domain name and user name where appropiate.
 
-Take a good look at the scripts and make sure you understand what they do, so you can adapt them to your environment if needed.
+1. Take a good look at the scripts and make sure you understand what they do, so you can adapt them to your environment if needed.
 
-Create any new scripts you might need for other types of destination servers in your network, and add calls to them to the `destins` file.
+1. Create any new scripts you might need for other types of destination servers in your network, and add calls to them to the `destins` file.
 
 ### Create and distribute new certificate
 
