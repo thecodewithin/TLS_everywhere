@@ -22,7 +22,7 @@ TEMP_PRIVATE_KEY=$TEMP_CERT_DIR/privkey.pem
 HASSOS_CHAIN_FILE=/ssl/fullchain.pem
 HASSOS_PRIVATE_KEY=/ssl/privkey.pem
 
-LOG=/addons/TLS_everywhere/log/hassos_certs.log
+LOG=/local_apps/TLS_everywhere/log/hassos_certs.log
 
 
 # Remove previous certificate
